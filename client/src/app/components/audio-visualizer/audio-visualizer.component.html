@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="column">
+    <div #rendererContainer id="mainRenderer" (window:resize)="eventHandlers.windowResizeHandler($event)" (mousedown)="eventHandlers.mouseDownHandler($event)"
+    (mousemove)="eventHandlers.mouseMoveHandler($event)" (mouseup)="eventHandlers.mouseUpHandler($event)" (mousemove)="eventHandlers.mouseMoveHandler($event)">
+  </div>
+  </div>
+  <div class="column" id="uicontainer">
+    <div class="widget-container">
+        <dx-file-uploader
+            #fileUploader
+            [multiple]="false"
+            (onValueChanged) = "audioMethods.loadAudioFromFiles($event.value)"
+            accept="*"
+            [(value)]="uploadedFiles"
+            readyToUploadMessage = "Ready to play."
+            uploadMode="useForm"
+        ></dx-file-uploader>
+        <div class="content">
+            <div *ngIf="uploadedFiles.length > 0">
+                <h4>Selected Files</h4>
+            </div>
+            <div *ngFor="let file of uploadedFiles">
+                <div class="selected-item">
+                    Name:
+                    <span>{{file.name}}</span><br /> Size:
+                    <span>{{file.size}}</span>bytes<br /> Type:
+                    <span>{{file.type}}</span><br /> Last Modified Date:
+                    <span>{{file.lastModifiedDate}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+      <dx-text-box [(value)]="youtubeURL" placeholder="Url here!"></dx-text-box>
+    </div>
+
+    <div class="row" style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+      <dx-button text="Download" (onClick)="audioMethods.downloadAudioFromYoutube()"></dx-button>
+    </div>
+
+
+
+    <div class="row" style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+      <dx-button text="Load Sample" (onClick)="audioMethods.loadSample()"></dx-button>
+    </div>
+    
+    <div class="row" style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+      <dx-button text="Play" (onClick)="audioMethods.playAudio()" [(disabled)]="audioManager.playButtonDisabled"></dx-button>
+    </div>
+    
+    <div class="row" style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+      <dx-button text="Pause" (onClick)="audioMethods.pauseAudio()"></dx-button>
+    </div>
+    
+    <div class="row" style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+      <dx-button text="Restart" (onClick)="audioMethods.restartAudio()"></dx-button>
+    </div>
+
+  
+  </div>
+</div>
+
+
+<dx-load-panel
+    #rendererLoadPanel
+    shadingColor="rgba(0,0,0,1)"
+    [position]="{ of: '#mainRenderer' }"
+    [(visible)]="isRendererLoading"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    [closeOnOutsideClick]="false">
+</dx-load-panel>
+
+<dx-load-panel
+    #uiLoadPanel
+    shadingColor="rgba(0,0,0,0.8)"
+    [position]="{ of: '#uicontainer' }"
+    [(visible)]="audioManager.isSongLoading"
+    [(message)]="audioManager.songLoadingStatus"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    [closeOnOutsideClick]="false">
+</dx-load-panel>
